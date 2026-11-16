@@ -6,6 +6,25 @@
 </head>
 <body>
 <h1>Job Application Tracker</h1>
+<h2>Add an application</h2>
+<form id="add-form">
+    <label>Company <input type="text" name="company" required></label>
+    <label>Job Title <input type="text" name="jobTitle" required></label>
+
+    <label>Status
+        <select name="status">
+            <option value="APPLIED">Applied</option>
+            <option value="INTERVIEW">Interview</option>
+            <option value="OFFER">Offer</option>
+            <option value="REJECTED">Rejected</option>
+        </select>
+    </label>
+
+    <label>Date Applied <input type="date" name="dateApplied" required></label>
+    <label>Deadline <input type="date" name="deadline" ></label>
+    <label>Notes <input type="text" name="notes" ></label>
+    <button type="submit">Add</button>
+</form>
 
 <table border="1">
     <thead>
@@ -47,6 +66,27 @@
         cell.textContent = text ?? "";
         row.appendChild(cell);
     }
+    document.getElementById("add-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = event.target;
+        const data = Object.fromEntries(new FormData(form));
+        if (data.deadline === "") {
+            data.deadline = null;
+        }
+
+        const response = await fetch("/applications", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            form.reset();
+            loadApplications();
+        } else {
+            alert("Could not save the application.");
+        }
+    });
 
     loadApplications();
 </script>
