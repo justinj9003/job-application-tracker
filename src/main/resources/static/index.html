@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Application Tracker</title>
+</head>
+<body>
+<h1>Job Application Tracker</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Company</th>
+        <th>Job Title</th>
+        <th>Status</th>
+        <th>Date Applied</th>
+        <th>Deadline</th>
+        <th>Notes</th>
+    </tr>
+    </thead>
+
+    <tbody id="applications">
+    </tbody>
+</table>
+<script>
+    async function loadApplications() {
+        const response = await fetch("/applications");
+        const applications = await response.json();
+
+        const tbody = document.getElementById("applications");
+        tbody.innerHTML = "";
+
+        for (const app of applications) {
+            const row = document.createElement("tr");
+            addCell(row, app.company);
+            addCell(row, app.jobTitle);
+            addCell(row, app.status);
+            addCell(row, app.dateApplied);
+            addCell(row, app.deadline);
+            addCell(row, app.notes);
+            tbody.appendChild(row);
+        }
+    }
+
+    function addCell(row, text) {
+        const cell = document.createElement("td");
+        cell.textContent = text ?? "";
+        row.appendChild(cell);
+    }
+
+    loadApplications();
+</script>
+</body>
+</html>
